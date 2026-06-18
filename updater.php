@@ -2,39 +2,58 @@
 
 /**
  * Plugin updater handler function.
- * Pings the Github repo that hosts the plugin to check for updates.
+ * Fetches the latest release from GitHub to check for updates.
  */
 function na8k_check_for_plugin_update( $transient ) {
 
-	// If no update transient or transient is empty, return.
 	if ( empty( $transient->checked ) ) {
 		return $transient;
 	}
 
-	// Plugin slug, path to the main plugin file, and the URL of the update server
 	$plugin_slug = 'nem-alderstjek/nem-alderstjek.php';
-	$update_url = 'https://cdn.nemalderstjek.dk/wp-plugin/updates.json';
+	$api_url     = 'https://api.github.com/repos/NemBestil/nemalderstjek-wp-plugin/releases/latest';
 
-	// Fetch update information from your server
-	$response = wp_remote_get( $update_url );
+	$response = wp_remote_get( $api_url, [
+		'headers' => [
+			'Accept'     => 'application/vnd.github+json',
+			'User-Agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url(),
+		],
+	] );
 
-	if ( is_wp_error( $response ) ) {
+	if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
 		return $transient;
 	}
 
-	// Parse the JSON response (update_info.json must return the latest version details)
-	$update_info = json_decode( wp_remote_retrieve_body( $response ) );
+	$release = json_decode( wp_remote_retrieve_body( $response ) );
 
-	// If a new version is available, modify the transient to reflect the update
-	if (!isset($transient->checked[ $plugin_slug ]) || version_compare( $transient->checked[ $plugin_slug ], $update_info->new_version, '<' ) ) {
-		$plugin_data = array(
+	if ( empty( $release->tag_name ) ) {
+		return $transient;
+	}
+
+	$new_version = ltrim( $release->tag_name, 'v' );
+
+	// Prefer an uploaded zip asset (correct folder name) over the source archive.
+	$package = '';
+	if ( ! empty( $release->assets ) ) {
+		foreach ( $release->assets as $asset ) {
+			if ( substr( $asset->name, -4 ) === '.zip' ) {
+				$package = $asset->browser_download_url;
+				break;
+			}
+		}
+	}
+	if ( empty( $package ) ) {
+		$package = "https://github.com/NemBestil/nemalderstjek-wp-plugin/archive/refs/tags/{$release->tag_name}.zip";
+	}
+
+	if ( ! isset( $transient->checked[ $plugin_slug ] ) || version_compare( $transient->checked[ $plugin_slug ], $new_version, '<' ) ) {
+		$transient->response[ $plugin_slug ] = (object) [
 			'slug'        => 'nem-alderstjek',
 			'plugin'      => $plugin_slug,
-			'new_version' => $update_info->new_version,
-			'url'         => $update_info->url,
-			'package'     => $update_info->package, // URL of the plugin zip file
-		);
-		$transient->response[ $plugin_slug ] = (object) $plugin_data;
+			'new_version' => $new_version,
+			'url'         => $release->html_url,
+			'package'     => $package,
+		];
 	}
 
 	return $transient;

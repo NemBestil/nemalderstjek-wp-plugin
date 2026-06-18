@@ -7,14 +7,14 @@
  * Tags: nemalderstjek, nem alderstjek, na8k, mitid, denmark, criipto, age verification, legal drinking age, id verification, online store, ecommerce, shop, shopping cart, sell online
  * Requires at least: 6.5
  * Tested up to: 7.0
- * Requires PHP: 8.1
+ * Requires PHP: 7.4
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
- * Version: 1.0.8
+ * Version: 1.0.9
  * Text Domain: na8k
  */
 
-const NA8K_VERSION = '1.0.8';
+const NA8K_VERSION = '1.0.9';
 
 if (!defined('NA8K_BASE_URL')) {
     define('NA8K_BASE_URL', 'https://v1.nemalderstjek.dk');

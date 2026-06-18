@@ -4,7 +4,7 @@ Tags: nemalderstjek, nem alderstjek, na8k, mitid, denmark, criipto, age verifica
 Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
