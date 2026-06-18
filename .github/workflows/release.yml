@@ -1,0 +1,42 @@
+name: Create Release on Version Change
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'nem-alderstjek.php'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Extract current version
+        id: current
+        run: |
+          VERSION=$(grep -m1 '^ \* Version:' nem-alderstjek.php | sed 's/.*Version: *//')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Extract previous version
+        id: previous
+        run: |
+          git show HEAD~1:nem-alderstjek.php > /tmp/prev-plugin.php 2>/dev/null || echo "" > /tmp/prev-plugin.php
+          VERSION=$(grep -m1 '^ \* Version:' /tmp/prev-plugin.php | sed 's/.*Version: *//')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Create release if version changed
+        if: steps.current.outputs.version != steps.previous.outputs.version && steps.current.outputs.version != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="v${{ steps.current.outputs.version }}"
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --generate-notes

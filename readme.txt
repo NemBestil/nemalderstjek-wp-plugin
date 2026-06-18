@@ -2,9 +2,9 @@
 Contributors: bitnissen
 Tags: nemalderstjek, nem alderstjek, na8k, mitid, denmark, criipto, age verification, legal drinking age, id verification, online store, ecommerce, shop, shopping cart, sell online
 Requires at least: 6.5
-Tested up to: 6.6
+Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
