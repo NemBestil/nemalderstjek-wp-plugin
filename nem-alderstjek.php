@@ -10,11 +10,11 @@
  * Requires PHP: 8.1
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
- * Version: 1.0.7
+ * Version: 1.0.8
  * Text Domain: na8k
  */
 
-const NA8K_VERSION = '1.0.7';
+const NA8K_VERSION = '1.0.8';
 
 if (!defined('NA8K_BASE_URL')) {
     define('NA8K_BASE_URL', 'https://v1.nemalderstjek.dk');
