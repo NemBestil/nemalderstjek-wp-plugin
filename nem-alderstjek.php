@@ -13,6 +13,7 @@
  * Version: 1.0.7
  * Text Domain: na8k
  */
+
 const NA8K_VERSION = '1.0.7';
 
 if (!defined('NA8K_BASE_URL')) {
