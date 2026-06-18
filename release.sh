@@ -10,6 +10,8 @@ cd /tmp
 zip -q -9 -r "$curdir/nem-alderstjek.zip" \
   ./nem-alderstjek/* \
   -x "nem-alderstjek/release.sh" \
+  -x "nem-alderstjek/CLAUDE.md" \
+  -x "nem-alderstjek/.github" \
   -x "nem-alderstjek/*.zip"
 
 unlink /tmp/nem-alderstjek
